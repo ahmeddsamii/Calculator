@@ -1,0 +1,40 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.Calculator" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/light_orange</item>
+        <item name="colorOnPrimary">@color/background</item>
+    </style>
+    <style name="Theme.Calculator" parent="Base.Theme.Calculator" />
+
+    <style name="ResultText" parent="Widget.AppCompat.TextView">
+        <item name="android:paddingStart">24dp</item>
+        <item name="android:paddingEnd">24dp</item>
+    </style>
+
+    <style name="ResultText.smallText" parent="ResultText">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/light_brown</item>
+    </style>
+
+    <style name="ResultText.normalText" parent="ResultText">
+        <item name="android:textSize">36sp</item>
+        <item name="android:textColor">@color/brown</item>
+    </style>
+
+    <style name="CalculatorButton">
+        <item name="android:textSize">@dimen/_22sp</item>
+        <item name="elevation">0dp</item>
+        <item name="android:stateListAnimator">@null</item>
+    </style>
+
+    <style name="CalculatorButton.Operation">
+        <item name="android:background">@drawable/circle_button</item>
+        <item name="android:textSize">@dimen/_22sp</item>
+    </style>
+
+    <style name="CalculatorButton.Number">
+        <item name="android:background">@drawable/circle_button_white</item>
+        <item name="android:textSize">@dimen/_22sp</item>
+        <item name="android:textColor">@color/brown</item>
+    </style>
+</resources>
