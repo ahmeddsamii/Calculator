@@ -57,7 +57,7 @@ class MainActivity : AppCompatActivity() {
     private fun setupActionButtons() {
         binding.btnEqual.setOnClickListener { viewModel.calculate() }
         binding.tvClear.setOnClickListener { viewModel.clear() }
-        binding.appCompatButton11.setOnClickListener { viewModel.clear() }
+        binding.btnChangeSign.setOnClickListener { viewModel.toggleSign() }
         binding.ibBack.setOnClickListener { viewModel.backspace() }
     }
 }

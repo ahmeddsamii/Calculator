@@ -59,6 +59,15 @@ class CalculatorViewModel : ViewModel() {
         operator = ""
     }
 
+    fun toggleSign() {
+        if (currentNumber.isEmpty()) return
+
+        currentNumber =
+            if (currentNumber.startsWith("-")) currentNumber.drop(1) else "-$currentNumber"
+
+        _result.value = currentNumber
+    }
+
     fun clear() {
         currentNumber = ""
         firstNumber = ""

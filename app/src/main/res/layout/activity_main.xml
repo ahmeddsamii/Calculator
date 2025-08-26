@@ -258,7 +258,7 @@
         app:layout_constraintTop_toTopOf="@+id/btnOne" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/appCompatButton11"
+        android:id="@+id/btn_changeSign"
         style="@style/CalculatorButton.Number"
         android:layout_width="76dp"
         android:layout_height="76dp"
@@ -266,7 +266,7 @@
         android:layout_marginTop="8dp"
         android:gravity="center"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
-        android:text="Ac"
+        android:text="@string/sign_button"
         app:layout_constraintEnd_toStartOf="@+id/btnZero"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -281,8 +281,8 @@
         android:text="@string/_0"
         app:layout_constraintEnd_toStartOf="@+id/btnDot"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/appCompatButton11"
-        app:layout_constraintTop_toTopOf="@+id/appCompatButton11" />
+        app:layout_constraintStart_toEndOf="@+id/btn_changeSign"
+        app:layout_constraintTop_toTopOf="@+id/btn_changeSign" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnDot"
@@ -294,7 +294,7 @@
         app:layout_constraintEnd_toStartOf="@+id/btnEqual"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/btnZero"
-        app:layout_constraintTop_toTopOf="@+id/appCompatButton11" />
+        app:layout_constraintTop_toTopOf="@+id/btn_changeSign" />
 
     <Button
         android:id="@+id/btnEqual"
@@ -307,6 +307,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/btnDot"
-        app:layout_constraintTop_toTopOf="@+id/appCompatButton11" />
+        app:layout_constraintTop_toTopOf="@+id/btn_changeSign" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
