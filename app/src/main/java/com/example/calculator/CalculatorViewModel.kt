@@ -22,38 +22,27 @@ class CalculatorViewModel : ViewModel() {
 
     fun addNumber(number: String) {
         if (number == "." && currentNumber.contains(".")) return
+
         currentNumber += number
-        _result.value = currentNumber
+        updateDisplay()
     }
 
     fun setOperator(op: String) {
         if (currentNumber.isEmpty()) return
+
         firstNumber = currentNumber
         operator = op
-        val previousExpression = "$firstNumber $op"
-        _previousExpression.value = previousExpression
         currentNumber = ""
+        updateDisplay()
     }
 
     fun calculate() {
-        if (firstNumber.isEmpty() || currentNumber.isEmpty() || operator.isEmpty()) return
+        if (!validToCalculate()) return
 
-        val num1 = firstNumber.toDouble()
-        val num2 = currentNumber.toDouble()
-
-        val result = when (operator) {
-            "+" -> num1 + num2
-            "-" -> num1 - num2
-            "*" -> num1 * num2
-            "/" -> if (num2 != 0.0) num1 / num2 else 0
-            "%" -> if (num2 != 0.0) num1 % num2 else 0
-            else -> 0.0
-        }
-
+        val result = performCalculation()
         _result.value = result.toString()
+        _previousExpression.value = "$firstNumber $operator $currentNumber ="
 
-        val previousExpression = "$firstNumber $operator $currentNumber ="
-        _previousExpression.value = previousExpression
         currentNumber = _result.value.toString()
         firstNumber = ""
         operator = ""
@@ -65,7 +54,7 @@ class CalculatorViewModel : ViewModel() {
         currentNumber =
             if (currentNumber.startsWith("-")) currentNumber.drop(1) else "-$currentNumber"
 
-        _result.value = currentNumber
+        updateDisplay()
     }
 
     fun clear() {
@@ -77,9 +66,34 @@ class CalculatorViewModel : ViewModel() {
     }
 
     fun backspace() {
-        if (currentNumber.isNotEmpty()) {
-            currentNumber = currentNumber.dropLast(1)
-            _result.value = currentNumber.ifEmpty { "0" }
+        if (currentNumber.isNotEmpty()) currentNumber = currentNumber.dropLast(1)
+
+        updateDisplay()
+    }
+
+    private fun updateDisplay() {
+        _result.value = when {
+            operator.isNotEmpty() && firstNumber.isNotEmpty() -> "$firstNumber $operator $currentNumber"
+            currentNumber.isNotEmpty() -> currentNumber
+            else -> "0"
+        }
+    }
+
+    private fun validToCalculate() =
+        firstNumber.isNotEmpty() && currentNumber.isNotEmpty() && operator.isNotEmpty()
+
+
+    private fun performCalculation(): Double {
+        val num1 = firstNumber.toDouble()
+        val num2 = currentNumber.toDouble()
+
+        return when (operator) {
+            Operator.PLUS.operatorStr -> num1 + num2
+            Operator.MINUS.operatorStr -> num1 - num2
+            Operator.MULTIPLY.operatorStr -> num1 * num2
+            Operator.DIVIDE.operatorStr -> if (num2 != 0.0) num1 / num2 else 0.0
+            Operator.MODULUS.operatorStr -> if (num2 != 0.0) num1 % num2 else 0.0
+            else -> 0.0
         }
     }
 }

@@ -33,25 +33,25 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupNumberButtons() {
-        binding.btnZero.setOnClickListener { viewModel.addNumber("0") }
-        binding.btnOne.setOnClickListener { viewModel.addNumber("1") }
-        binding.btnTwo.setOnClickListener { viewModel.addNumber("2") }
-        binding.btnThree.setOnClickListener { viewModel.addNumber("3") }
-        binding.btnFour.setOnClickListener { viewModel.addNumber("4") }
-        binding.btnFive.setOnClickListener { viewModel.addNumber("5") }
-        binding.btnSix.setOnClickListener { viewModel.addNumber("6") }
-        binding.btnSeven.setOnClickListener { viewModel.addNumber("7") }
-        binding.btnEight.setOnClickListener { viewModel.addNumber("8") }
-        binding.btnNine.setOnClickListener { viewModel.addNumber("9") }
-        binding.btnDot.setOnClickListener { viewModel.addNumber(".") }
+        binding.btnZero.setOnClickListener { viewModel.addNumber(getString(R.string._0)) }
+        binding.btnOne.setOnClickListener { viewModel.addNumber(getString(R.string._1)) }
+        binding.btnTwo.setOnClickListener { viewModel.addNumber(getString(R.string._2)) }
+        binding.btnThree.setOnClickListener { viewModel.addNumber(getString(R.string._3)) }
+        binding.btnFour.setOnClickListener { viewModel.addNumber(getString(R.string._4)) }
+        binding.btnFive.setOnClickListener { viewModel.addNumber(getString(R.string._5)) }
+        binding.btnSix.setOnClickListener { viewModel.addNumber(getString(R.string._6)) }
+        binding.btnSeven.setOnClickListener { viewModel.addNumber(getString(R.string._7)) }
+        binding.btnEight.setOnClickListener { viewModel.addNumber(getString(R.string._8)) }
+        binding.btnNine.setOnClickListener { viewModel.addNumber(getString(R.string._9)) }
+        binding.btnDot.setOnClickListener { viewModel.addNumber(getString(R.string.dot)) }
     }
 
     private fun setupOperatorButtons() {
-        binding.btnPlus.setOnClickListener { viewModel.setOperator("+") }
-        binding.btnMinus.setOnClickListener { viewModel.setOperator("-") }
-        binding.btnMultiplication.setOnClickListener { viewModel.setOperator("*") }
-        binding.btnDivision.setOnClickListener { viewModel.setOperator("/") }
-        binding.btnModulus.setOnClickListener { viewModel.setOperator("%") }
+        binding.btnPlus.setOnClickListener { viewModel.setOperator(getString(R.string.plus)) }
+        binding.btnMinus.setOnClickListener { viewModel.setOperator(getString(R.string.minus)) }
+        binding.btnMultiplication.setOnClickListener { viewModel.setOperator(getString(R.string.x_operator)) }
+        binding.btnDivision.setOnClickListener { viewModel.setOperator(getString(R.string.division)) }
+        binding.btnModulus.setOnClickListener { viewModel.setOperator(getString(R.string.modulus)) }
     }
 
     private fun setupActionButtons() {
