@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity() {
     private fun setupOperatorButtons() {
         binding.btnPlus.setOnClickListener { viewModel.setOperator(getString(R.string.plus)) }
         binding.btnMinus.setOnClickListener { viewModel.setOperator(getString(R.string.minus)) }
-        binding.btnMultiplication.setOnClickListener { viewModel.setOperator(getString(R.string.x_operator)) }
+        binding.btnMultiplication.setOnClickListener { viewModel.setOperator(getString(R.string.x)) }
         binding.btnDivision.setOnClickListener { viewModel.setOperator(getString(R.string.division)) }
         binding.btnModulus.setOnClickListener { viewModel.setOperator(getString(R.string.modulus)) }
     }

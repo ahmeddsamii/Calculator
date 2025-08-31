@@ -5,9 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 class CalculatorViewModel : ViewModel() {
-    private var currentNumber = ""
-    private var operator = ""
-    private var firstNumber = ""
+    private var currentInput = ""
+    private var expression = mutableListOf<String>()
 
     private val _result = MutableLiveData<String>()
     val result: LiveData<String> = _result
@@ -21,79 +20,131 @@ class CalculatorViewModel : ViewModel() {
     }
 
     fun addNumber(number: String) {
-        if (number == "." && currentNumber.contains(".")) return
+        if (number == "." && currentInput.contains(".")) return
 
-        currentNumber += number
+        currentInput += number
         updateDisplay()
     }
 
     fun setOperator(op: String) {
-        if (currentNumber.isEmpty()) return
+        if (currentInput.isEmpty() && expression.isEmpty()) return
 
-        firstNumber = currentNumber
-        operator = op
-        currentNumber = ""
+        if (currentInput.isNotEmpty())
+            expression.add(currentInput)
+        currentInput = ""
+
+        if (expression.isNotEmpty() && isOperator(expression.last()))
+            expression[expression.lastIndex] = op
+        else expression.add(op)
+
+
         updateDisplay()
     }
 
     fun calculate() {
-        if (!validToCalculate()) return
+        if (currentInput.isNotEmpty()) expression.add(currentInput)
 
-        val result = performCalculation()
-        _result.value = result.toString()
-        _previousExpression.value = "$firstNumber $operator $currentNumber ="
+        if (expression.isEmpty()) return
 
-        currentNumber = _result.value.toString()
-        firstNumber = ""
-        operator = ""
+        runCatching {
+            val result = evaluateExpression(expression.toList())
+            _result.value = formatResult(result)
+            _previousExpression.value = "${expression.joinToString(" ")} ="
+
+            currentInput = _result.value.toString()
+            expression.clear()
+        }.onFailure {
+            _result.value = "Error"
+            clear()
+        }
     }
 
     fun toggleSign() {
-        if (currentNumber.isEmpty()) return
+        if (currentInput.isEmpty() || currentInput == "0") return
 
-        currentNumber =
-            if (currentNumber.startsWith("-")) currentNumber.drop(1) else "-$currentNumber"
+        currentInput =
+            if (currentInput.startsWith("-")) currentInput.drop(1) else "-$currentInput"
 
         updateDisplay()
     }
 
     fun clear() {
-        currentNumber = ""
-        firstNumber = ""
-        operator = ""
+        currentInput = ""
+        expression.clear()
         _result.value = "0"
         _previousExpression.value = ""
     }
 
     fun backspace() {
-        if (currentNumber.isNotEmpty()) currentNumber = currentNumber.dropLast(1)
-
-        updateDisplay()
+        if (currentInput.isNotEmpty()) {
+            currentInput = currentInput.dropLast(1)
+            updateDisplay()
+        }
     }
 
     private fun updateDisplay() {
         _result.value = when {
-            operator.isNotEmpty() && firstNumber.isNotEmpty() -> "$firstNumber $operator $currentNumber"
-            currentNumber.isNotEmpty() -> currentNumber
+            currentInput.isNotEmpty() -> buildDisplayString() + currentInput
+            expression.isNotEmpty() -> buildDisplayString()
             else -> "0"
         }
     }
 
-    private fun validToCalculate() =
-        firstNumber.isNotEmpty() && currentNumber.isNotEmpty() && operator.isNotEmpty()
+    private fun buildDisplayString(): String {
+        return if (expression.isNotEmpty()) expression.joinToString(" ") + " " else ""
+    }
 
+    private fun isOperator(token: String): Boolean {
+        return token in listOf("+", "-", "x", "/", "%")
+    }
 
-    private fun performCalculation(): Double {
-        val num1 = firstNumber.toDouble()
-        val num2 = currentNumber.toDouble()
+    private fun evaluateExpression(tokens: List<String>): Double {
+        if (tokens.isEmpty()) return 0.0
 
-        return when (operator) {
-            Operator.PLUS.operatorStr -> num1 + num2
-            Operator.MINUS.operatorStr -> num1 - num2
-            Operator.MULTIPLY.operatorStr -> num1 * num2
-            Operator.DIVIDE.operatorStr -> if (num2 != 0.0) num1 / num2 else 0.0
-            Operator.MODULUS.operatorStr -> if (num2 != 0.0) num1 % num2 else 0.0
-            else -> 0.0
+        val numbers = tokens.filterIndexed { index, _ -> index % 2 == 0 }.map { it.toDouble() }
+            .toMutableList()
+        val operators = tokens.filterIndexed { index, _ -> index % 2 == 1 }.toMutableList()
+
+        var opIndex = 0
+        while (opIndex < operators.size) {
+            when (operators[opIndex]) {
+                "x" -> {
+                    numbers[opIndex] = numbers[opIndex] * numbers[opIndex + 1]
+                    numbers.removeAt(opIndex + 1)
+                    operators.removeAt(opIndex)
+                }
+
+                "/" -> {
+                    if (numbers[opIndex + 1] == 0.0) throw ArithmeticException("Division by zero")
+                    numbers[opIndex] = numbers[opIndex] / numbers[opIndex + 1]
+                    numbers.removeAt(opIndex + 1)
+                    operators.removeAt(opIndex)
+                }
+
+                "%" -> {
+                    if (numbers[opIndex + 1] == 0.0) throw ArithmeticException("Division by zero")
+                    numbers[opIndex] = numbers[opIndex] % numbers[opIndex + 1]
+                    numbers.removeAt(opIndex + 1)
+                    operators.removeAt(opIndex)
+                }
+
+                else -> opIndex++
+            }
         }
+
+        var result = numbers[0]
+        for (index in operators.indices) {
+            when (operators[index]) {
+                "+" -> result += numbers[index + 1]
+                "-" -> result -= numbers[index + 1]
+            }
+        }
+
+        return result
+    }
+
+    private fun formatResult(result: Double): String {
+        return if (result == result.toInt().toDouble()) result.toInt()
+            .toString() else result.toString()
     }
 }
