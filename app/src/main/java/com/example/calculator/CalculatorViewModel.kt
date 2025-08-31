@@ -90,13 +90,11 @@ class CalculatorViewModel : ViewModel() {
         }
     }
 
-    private fun buildDisplayString(): String {
-        return if (expression.isNotEmpty()) expression.joinToString(" ") + " " else ""
-    }
+    private fun buildDisplayString() =
+        if (expression.isNotEmpty()) expression.joinToString(" ") + " " else ""
 
-    private fun isOperator(token: String): Boolean {
-        return token in listOf("+", "-", "x", "/", "%")
-    }
+
+    private fun isOperator(token: String) = token in listOf("+", "-", "x", "/", "%")
 
     private fun evaluateExpression(tokens: List<String>): Double {
         if (tokens.isEmpty()) return 0.0
@@ -108,20 +106,20 @@ class CalculatorViewModel : ViewModel() {
         var opIndex = 0
         while (opIndex < operators.size) {
             when (operators[opIndex]) {
-                "x" -> {
+                Operator.MULTIPLY.operatorStr -> {
                     numbers[opIndex] = numbers[opIndex] * numbers[opIndex + 1]
                     numbers.removeAt(opIndex + 1)
                     operators.removeAt(opIndex)
                 }
 
-                "/" -> {
+                Operator.DIVIDE.operatorStr -> {
                     if (numbers[opIndex + 1] == 0.0) throw ArithmeticException("Division by zero")
                     numbers[opIndex] = numbers[opIndex] / numbers[opIndex + 1]
                     numbers.removeAt(opIndex + 1)
                     operators.removeAt(opIndex)
                 }
 
-                "%" -> {
+                Operator.MODULUS.operatorStr -> {
                     if (numbers[opIndex + 1] == 0.0) throw ArithmeticException("Division by zero")
                     numbers[opIndex] = numbers[opIndex] % numbers[opIndex + 1]
                     numbers.removeAt(opIndex + 1)
@@ -135,8 +133,8 @@ class CalculatorViewModel : ViewModel() {
         var result = numbers[0]
         for (index in operators.indices) {
             when (operators[index]) {
-                "+" -> result += numbers[index + 1]
-                "-" -> result -= numbers[index + 1]
+                Operator.PLUS.operatorStr -> result += numbers[index + 1]
+                Operator.MINUS.operatorStr -> result -= numbers[index + 1]
             }
         }
 
