@@ -103,33 +103,46 @@ class CalculatorViewModel : ViewModel() {
             .toMutableList()
         val operators = tokens.filterIndexed { index, _ -> index % 2 == 1 }.toMutableList()
 
+        processHighPriorityOperations(numbers, operators)
+        return processLowPriorityOperations(numbers, operators)
+    }
+
+    private fun processHighPriorityOperations(
+        numbers: MutableList<Double>,
+        operators: MutableList<String>
+    ) {
         var opIndex = 0
         while (opIndex < operators.size) {
             when (operators[opIndex]) {
                 Operator.MULTIPLY.operatorStr -> {
-                    numbers[opIndex] = numbers[opIndex] * numbers[opIndex + 1]
-                    numbers.removeAt(opIndex + 1)
-                    operators.removeAt(opIndex)
+                    performOperation(numbers, operators, opIndex) { firstNumber, secondNumber ->
+                        firstNumber * secondNumber
+                    }
                 }
 
                 Operator.DIVIDE.operatorStr -> {
-                    if (numbers[opIndex + 1] == 0.0) throw ArithmeticException("Division by zero")
-                    numbers[opIndex] = numbers[opIndex] / numbers[opIndex + 1]
-                    numbers.removeAt(opIndex + 1)
-                    operators.removeAt(opIndex)
+                    performOperation(numbers, operators, opIndex) { firstNumber, secondNumber ->
+                        if (secondNumber == 0.0) throw ArithmeticException("Division by zero")
+                        firstNumber / secondNumber
+                    }
                 }
 
                 Operator.MODULUS.operatorStr -> {
-                    if (numbers[opIndex + 1] == 0.0) throw ArithmeticException("Division by zero")
-                    numbers[opIndex] = numbers[opIndex] % numbers[opIndex + 1]
-                    numbers.removeAt(opIndex + 1)
-                    operators.removeAt(opIndex)
+                    performOperation(numbers, operators, opIndex) { firstNumber,  secondNumber->
+                        if (secondNumber == 0.0) throw ArithmeticException("Division by zero")
+                        firstNumber % secondNumber
+                    }
                 }
 
                 else -> opIndex++
             }
         }
+    }
 
+    private fun processLowPriorityOperations(
+        numbers: MutableList<Double>,
+        operators: MutableList<String>
+    ): Double {
         var result = numbers[0]
         for (index in operators.indices) {
             when (operators[index]) {
@@ -137,7 +150,18 @@ class CalculatorViewModel : ViewModel() {
                 Operator.MINUS.operatorStr -> result -= numbers[index + 1]
             }
         }
-
         return result
+    }
+
+    private fun performOperation(
+        numbers: MutableList<Double>,
+        operators: MutableList<String>,
+        opIndex: Int,
+        operation: (Double, Double) -> Double
+    ) {
+        val result = operation(numbers[opIndex], numbers[opIndex + 1])
+        numbers[opIndex] = result
+        numbers.removeAt(opIndex + 1)
+        operators.removeAt(opIndex)
     }
 }
