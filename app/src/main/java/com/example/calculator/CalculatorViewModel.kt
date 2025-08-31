@@ -48,7 +48,7 @@ class CalculatorViewModel : ViewModel() {
 
         runCatching {
             val result = evaluateExpression(expression.toList())
-            _result.value = formatResult(result)
+            _result.value = result.toString()
             _previousExpression.value = "${expression.joinToString(" ")} ="
 
             currentInput = _result.value.toString()
@@ -139,10 +139,5 @@ class CalculatorViewModel : ViewModel() {
         }
 
         return result
-    }
-
-    private fun formatResult(result: Double): String {
-        return if (result == result.toInt().toDouble()) result.toInt()
-            .toString() else result.toString()
     }
 }
